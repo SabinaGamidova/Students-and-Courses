@@ -3,8 +3,7 @@ import model.Category;
 import model.Course;
 import model.Student;
 import service.MainService;
-import service.StudentService;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,10 +21,10 @@ public class Controller {
 
     public void userInterface(){
         int choose;
-        System.out.println("Выберите опцию: 1-Crud для студента, 2-Crud для курса, 3-Записать студента на курс, " +
-                "4-Удалить студента с курса," + " 0 - выход");
-        choose = Integer.parseInt(scanner.nextLine());
         do {
+            System.out.println("Выберите опцию: 1-Crud для студента, 2-Crud для курса, 3-Записать студента на курс, " +
+                    "4-Удалить студента с курса," + " 0 - выход");
+            choose = Integer.parseInt(scanner.nextLine());
             switch (choose) {
                 case 1:
                     do {
@@ -49,21 +48,18 @@ public class Controller {
                     } while (choose == 1);
                     break;
                 case 2:
-                    System.out.println("Выберите, что вы хотите сделать: 1-Добавить новый курс; 2-Получить список всех курсов, 3-Удалить курс, " +
-                            "4-Получить курс по категории" + "5-Найти курс по id" + " 6-Обновить данные о курсе," + " 0 - выход");
-                    choose = Integer.parseInt(scanner.nextLine());
                     do {
                         System.out.println("Выберите, что вы хотите сделать: 1-Добавить новый курс; 2-Получить список всех курсов, 3-Удалить курс, " +
                                 "4-Найти курс по категории, 5-Найти курс по id," +
-                                " 6-Обновить данные о курсе" + "0 - выход");
+                                " 6-Обновить данные о курсе" + " 0 - выход");
                         choose = Integer.parseInt(scanner.nextLine());
                         switch (choose) {
                             case 1 -> createCourse();
                             case 2 -> getAllCourses();
                             case 3 -> deleteCourse();
-                            case 5 -> getByCategory();
-                            case 6 -> getCourseById();
-                            case 7 -> updateCourse();
+                            case 4 -> getByCategory();
+                            case 5 -> getCourseById();
+                            case 6 -> updateCourse();
                             case 0 -> System.exit(1);
                             default -> System.out.println("Операция не поддерживается.");
                         }
@@ -94,11 +90,9 @@ public class Controller {
         String firstname = scanner.nextLine();
         System.out.println("Введите фамилию:");
         String surname = scanner.nextLine();
-        System.out.println("Введите номер курса:");
-        Integer course = Integer.parseInt(scanner.nextLine());
         System.out.println("Введите номер группы:");
         Integer group = Integer.parseInt(scanner.nextLine());
-        Student student = new Student(firstname, surname,group);
+        Student student = new Student(firstname, surname, group);
         if(mainService.createStudent(student)){
             System.out.println("Данные про ученика успешно созданы.");
             return;
@@ -248,7 +242,7 @@ public class Controller {
 
 
     private void getByCategory() {
-        System.out.println("Введите категорию курса, который хотите найти:");
+        System.out.println("Введите категорию курса, который хотите найти: 1 - Математика, 2 - Английский, 3 - Физика, 4 - Биология.");
         Integer category = Integer.parseInt(scanner.nextLine());
         if(mainService.getCourseByCategory(chooseCategory(category)) != null){
             System.out.println(mainService.getCourseByCategory(chooseCategory(category)).toString());

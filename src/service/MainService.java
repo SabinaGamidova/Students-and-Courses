@@ -59,9 +59,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     public List<Student> getAllStudents() { return studentOperations.getAllStudents(); }
 
     @Override
-    public boolean createStudent(Student s) {
-        return false;
-    }
+    public boolean createStudent(Student s) {return studentOperations.createStudent(s);}
 
     @Override
     public List<Student> getStudentByGroup(int group) {
