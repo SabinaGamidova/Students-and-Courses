@@ -3,7 +3,6 @@ import model.Category;
 import model.Course;
 import model.Student;
 import service.*;
-
 import java.util.List;
 import java.util.Scanner;
 
