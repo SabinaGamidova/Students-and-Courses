@@ -63,6 +63,6 @@ public class Course {
 
     @Override
     public String toString() {
-        return  "Название = " + name + ", категория = " + category + ", преподаватель = " + teacher + ", id = " + id;
+        return  name + ": категория = " + category + ", преподаватель = " + teacher + ", id = " + id;
     }
 }

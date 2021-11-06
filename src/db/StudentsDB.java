@@ -1,4 +1,5 @@
 package db;
+import model.Course;
 import model.Student;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,10 +77,5 @@ public StudentsDB() {
         }
         return id;
     }
-
-
-
-
-
 
 }

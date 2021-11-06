@@ -66,7 +66,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Имя: " + firstname + ", Фамилия: " + surname + ", Группа " + group + ", ID = " + id;
+        return firstname + " " + surname + ", группа " + group + ", ID = " + id;
     }
 
     @Override

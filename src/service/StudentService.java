@@ -63,7 +63,7 @@ public class StudentService implements StudentOperations{
         if(s.getSurname() == null || s.getSurname().isBlank()){
             return false;
         }
-        if (s.getGroup() < 0 && s.getGroup() > 6) {
+        if (s.getGroup() < 0 || s.getGroup() > 6) {
             return false;
         }
         return true;
