@@ -11,16 +11,13 @@ import static model.Category.*;
 
 public class Controller {
     private Scanner scanner;
-    private MainOperations mainOperations;
-    private StudentOperations studentOperations;
-    private CourseOperations courseOperations;
+    private MainService mainService;
+
 
 
     public Controller() {
         scanner = new Scanner(System.in);
-        mainOperations = new MainService();
-        studentOperations = new StudentService();
-        courseOperations = new CoursesService();
+        mainService = new MainService();
     }
 
     public void userInterface(){
@@ -96,7 +93,7 @@ public class Controller {
         System.out.println("Введите номер группы:");
         int group = Integer.parseInt(scanner.nextLine());
         Student student = new Student(firstname, surname, group);
-        if(studentOperations.createStudent(student)){
+        if(mainService.createStudent(student)){
             System.out.println("Данные про ученика успешно созданы.");
             return;
         }
@@ -105,7 +102,7 @@ public class Controller {
 
 
     private void getAll() {
-        List<Student>students = studentOperations.getAllStudents();
+        List<Student>students = mainService.getAllStudents();
         for (Student s : students) {
             System.out.println(s.toString());
         }
@@ -115,7 +112,7 @@ public class Controller {
         getAll();
         System.out.println("Введите id ученика, которого хотите удалить:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(studentOperations.deleteStudent(id)){
+        if(mainService.deleteStudent(id)){
             System.out.println("Ученик успешно удалён.");
             return;
         }
@@ -127,8 +124,8 @@ public class Controller {
         getAll();
         System.out.println("Чтобы получить список учеников определенной группы, сначала введите номер группы:");
         int group = Integer.parseInt(scanner.nextLine());
-        if(studentOperations.getStudentByGroup(group) != null){
-            for (Student student : studentOperations.getStudentByGroup(group)) {
+        if(mainService.getStudentByGroup(group) != null){
+            for (Student student : mainService.getStudentByGroup(group)) {
                 System.out.println(student.toString());
 
             }
@@ -140,8 +137,8 @@ public class Controller {
     private void getById() {
         System.out.println("Введите id ученика, которого хотите найти:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(studentOperations.getStudentById(id) != null){
-            System.out.println(studentOperations.getStudentById(id).toString());
+        if(mainService.getStudentById(id) != null){
+            System.out.println(mainService.getStudentById(id).toString());
             return;
         }
         System.out.println("Вы ввели неправильный id.");
@@ -152,7 +149,7 @@ public class Controller {
         getAll();
         System.out.println("Введите id студента, которого хотите изменить:");
         int id = Integer.parseInt(scanner.nextLine());
-        Student student = studentOperations.getStudentById(id);
+        Student student = mainService.getStudentById(id);
         if(student == null) {
             System.out.println("Неправильный id");
             return;
@@ -180,7 +177,7 @@ public class Controller {
                 return;
             }
         }
-        if(studentOperations.updateStudent(student)){
+        if(mainService.updateStudent(student)){
             System.out.println("Обновление прошло успешно. " + student.toString());
             return;
         }
@@ -196,7 +193,7 @@ public class Controller {
         System.out.println("Введите данные о преподавателе:");
         String teacher = scanner.nextLine();
         Course course = new Course(name, chooseCategory(category), teacher);
-        if(courseOperations.createCourse(course)){
+        if(mainService.createCourse(course)){
             System.out.println("Данные про курс успешно созданы.");
             return;
         }
@@ -224,7 +221,7 @@ public class Controller {
 
 
     private void getAllCourses() {
-        List<Course>courses = courseOperations.getAllCourses();
+        List<Course>courses = mainService.getAllCourses();
         for (Course c : courses) {
             System.out.println(c.toString());
         }
@@ -235,7 +232,7 @@ public class Controller {
         getAllCourses();
         System.out.println("Введите id курса, который хотите удалить:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(courseOperations.deleteCourse(id)){
+        if(mainService.deleteCourse(id)){
             System.out.println("Курс успешно удалён.");
             return;
         }
@@ -247,8 +244,8 @@ public class Controller {
     private void getByCategory() {
         System.out.println("Введите категорию курса, который хотите найти: 1 - Математика, 2 - Английский, 3 - Физика, 4 - Биология.");
         Integer category = Integer.parseInt(scanner.nextLine());
-        if(courseOperations.getCourseByCategory(chooseCategory(category)) != null){
-            System.out.println(courseOperations.getCourseByCategory(chooseCategory(category)).toString());
+        if(mainService.getCourseByCategory(chooseCategory(category)) != null){
+            System.out.println(mainService.getCourseByCategory(chooseCategory(category)).toString());
             return;
         }
         System.out.println("Вы ввели неправильную категорию.");
@@ -257,8 +254,8 @@ public class Controller {
     private void getCourseById() {
         System.out.println("Введите id курса, который хотите найти:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(courseOperations.getCourseById(id) != null){
-            System.out.println(courseOperations.getCourseById(id).toString());
+        if(mainService.getCourseById(id) != null){
+            System.out.println(mainService.getCourseById(id).toString());
             return;
         }
         System.out.println("Вы ввели неправильный id.");
@@ -269,7 +266,7 @@ public class Controller {
         getAllCourses();
         System.out.println("Введите id курса, который хотите изменить:");
         int id = Integer.parseInt(scanner.nextLine());
-        Course course = courseOperations.getCourseById(id);
+        Course course = mainService.getCourseById(id);
         if(course == null) {
             System.out.println("Неправильный id");
             return;
@@ -297,7 +294,7 @@ public class Controller {
                 return;
             }
         }
-        if(courseOperations.updateCourse(course)){
+        if(mainService.updateCourse(course)){
             System.out.println("Обновление прошло успешно. " + course.toString());
             return;
         }
@@ -306,34 +303,26 @@ public class Controller {
 
 
     public void addStudentOnCourse() {
-        Course course = new Course();
-        Student student = new Student();
         System.out.println("Введите id студента:");
         int studentId = Integer.parseInt(scanner.nextLine());
         System.out.println("Введите id курса:");
         int courseId = Integer.parseInt(scanner.nextLine());
-        course = courseOperations.getCourseById(courseId);
-        student = studentOperations.getStudentById(studentId);
-        if(mainOperations.addStudentOnCourse(student, course)){
-            System.out.println("Студент: " + student.toString() + " успешно добавлен(а) на курс " + course.toString());
+        if(mainService.addStudentOnCourse(studentId, courseId)){
+            System.out.println("Студент успешно добавлен(а) на курс.");
             return;
         }
-        System.out.println("Студент: " + student.toString() + " не добавлен(а) на курс " + course.toString());
+        System.out.println("Студент не добавлен(а) на курс. Такого студента/курса не существует.");
     }
 
     public void deleteStudentFromCourse() {
-        Course course = new Course();
-        Student student = new Student();
         System.out.println("Введите id студента:");
         int studentId = Integer.parseInt(scanner.nextLine());
         System.out.println("Введите id курса:");
         int courseId = Integer.parseInt(scanner.nextLine());
-        course = courseOperations.getCourseById(courseId);
-        student = studentOperations.getStudentById(studentId);
-        if(mainOperations.deleteStudentFromCourse(student, course)){
-            System.out.println("Студент: " + student.toString() + " успешно удален(а) с курса " + course.toString());
+        if(mainService.deleteStudentFromCourse(studentId, courseId)){
+            System.out.println("Студент успешно удален(а) с курса.");
             return;
         }
-        System.out.println("Студент: " + student.toString() + " не удален(а) с курса " + course.toString());
+        System.out.println("Студент не удален(а) с курса. Такого студента/курса не существует.");
     }
 }

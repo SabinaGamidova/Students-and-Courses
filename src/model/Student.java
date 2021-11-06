@@ -28,7 +28,6 @@ public class Student {
         this.surname = surname;
         this.group = group;
         courses = new ArrayList<>();
-
     }
 
     public int getId() {

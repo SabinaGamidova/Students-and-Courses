@@ -32,7 +32,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
         }
         List<Student> students = course.getStudents();
         for (Student student : students) {
-            deleteStudentFromCourse(student, course);
+            deleteStudentFromCourse(student.getId(), course.getId());
         }
         return courseOperations.deleteCourse(id);
     }
@@ -92,13 +92,15 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
         }
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
-            deleteStudentFromCourse(student, c);
+            deleteStudentFromCourse(student.getId(), c.getId());
         }
         return studentOperations.deleteStudent(id);
     }
 
     @Override
-    public boolean addStudentOnCourse(Student student, Course course) {
+    public boolean addStudentOnCourse(int studentId, int courseId) {
+        Student student = getStudentById(studentId);
+        Course course = getCourseById(courseId);
         if (student != null && course != null) {
             if (!isStudentOnCourse(student, course)) {
                 student.getCourses().add(course);
@@ -113,7 +115,9 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public boolean deleteStudentFromCourse(Student student, Course course) {
+    public boolean deleteStudentFromCourse(int studentId, int courseId) {
+        Student student = getStudentById(studentId);
+        Course course = getCourseById(courseId);
         if (student != null && course != null) {
             if (isStudentOnCourse(student, course)) {
                 student.getCourses().remove(course);
