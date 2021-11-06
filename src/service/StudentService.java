@@ -1,6 +1,7 @@
 package service;
 
 import db.StudentsDB;
+import model.Course;
 import model.Student;
 
 import java.util.List;
@@ -67,5 +68,14 @@ public class StudentService implements StudentOperations{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Course> getAllCoursesOfStudent(int id){
+        Student student = getStudentById(id);
+        if(student != null){
+            return student.getCourses();
+        }
+       return null;
     }
 }

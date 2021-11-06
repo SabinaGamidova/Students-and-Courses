@@ -77,20 +77,14 @@ public class CoursesService implements CourseOperations{
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public List<Student> getAllStudentsOnCourse(int id){
+        Course course = getCourseById(id);
+        if(course != null){
+            return course.getStudents();
+        }
+        return null;
+    }
 
 
 

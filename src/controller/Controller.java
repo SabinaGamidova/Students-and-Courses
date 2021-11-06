@@ -27,63 +27,65 @@ public class Controller {
                     "4-Удалить студента с курса," + " 0 - выход");
             choose = Integer.parseInt(scanner.nextLine());
             switch (choose) {
-                case 1:
-                    do {
-                        System.out.println("Выберите, что вы хотите сделать: 1-Добавить нового ученика; 2-Получить список всех, 3-Удалить ученика, " +
-                                "4-Сортировать учеников по группе," + " 5-Найти ученика по id," + " 6-Обновить данные об ученике," + " 0 - выход");
-                        choose = Integer.parseInt(scanner.nextLine());
-                        switch (choose) {
-                            case 1 -> createStudent();
-                            case 2 -> getAll();
-                            case 3 -> delete();
-                            case 4 -> getByGroup();
-                            case 5 -> getById();
-                            case 6 -> update();
-                            case 0 -> System.exit(1);
-                            default -> System.out.println("Операция не поддерживается.");
-                        }
-                        System.out.println("Хотите продолжить? 1-да, другие числа-нет");
-                        choose = Integer.parseInt(scanner.nextLine());
-
-                    } while (choose == 1);
-                    break;
-                case 2:
-                    do {
-                        System.out.println("Выберите, что вы хотите сделать: 1-Добавить новый курс; 2-Получить список всех курсов, 3-Удалить курс, " +
-                                "4-Найти курс по категории, 5-Найти курс по id," +
-                                " 6-Обновить данные о курсе" + " 0 - выход");
-                        choose = Integer.parseInt(scanner.nextLine());
-                        switch (choose) {
-                            case 1 -> createCourse();
-                            case 2 -> getAllCourses();
-                            case 3 -> deleteCourse();
-                            case 4 -> getByCategory();
-                            case 5 -> getCourseById();
-                            case 6 -> updateCourse();
-                            case 0 -> System.exit(1);
-                            default -> System.out.println("Операция не поддерживается.");
-                        }
-                        System.out.println("Хотите продолжить? 1-да, другие числа-нет");
-                        choose = Integer.parseInt(scanner.nextLine());
-
-                    } while (choose == 1);
-                    break;
-                case 3:
-                    addStudentOnCourse();
-                    break;
-                case 4:
-                    deleteStudentFromCourse();
-                    break;
-                case 0: {
-                    System.exit(1);
+                case 1 -> studentCrudInterface();
+                case 2 -> courseCrudInterface();
+                case 3 -> addStudentOnCourse();
+                case 4 -> deleteStudentFromCourse();
+                case 0 -> System.exit(1);
+                default -> System.out.println("Неизвестная операция!");
                 }
-                default: {
-                    System.out.println("Неизвестная операция!");
-                    break;
-                }
-            }
         }while(choose!=0);
     }
+
+    private void courseCrudInterface() {
+        int choose;
+        do {
+            System.out.println("Выберите, что вы хотите сделать: 1-Добавить новый курс; 2-Получить список всех курсов, 3-Удалить курс, " +
+                    "4-Найти курс по категории, 5-Найти курс по id," +
+                    " 6-Обновить данные о курсе, 7-Получить всех студентов на курсе, 0 - выход");
+            choose = Integer.parseInt(scanner.nextLine());
+            switch (choose) {
+                case 1 -> createCourse();
+                case 2 -> getAllCourses();
+                case 3 -> deleteCourse();
+                case 4 -> getByCategory();
+                case 5 -> getCourseById();
+                case 6 -> updateCourse();
+                case 7 -> getAllStudentsOnCourse();
+                case 0 -> System.exit(1);
+                default -> System.out.println("Операция не поддерживается.");
+            }
+            System.out.println("Хотите продолжить? 1-да, другие числа-нет");
+            choose = Integer.parseInt(scanner.nextLine());
+
+        } while (choose == 1);
+    }
+
+
+
+    private void studentCrudInterface(){
+        int choose;
+        do {
+            System.out.println("Выберите, что вы хотите сделать: 1-Добавить нового ученика; 2-Получить список всех, 3-Удалить ученика, " +
+                    "4-Сортировать учеников по группе, 5-Найти ученика по id, 6-Обновить данные об ученике, 7-Получить все курсы студента, 0 - выход");
+            choose = Integer.parseInt(scanner.nextLine());
+            switch (choose) {
+                case 1 -> createStudent();
+                case 2 -> getAll();
+                case 3 -> delete();
+                case 4 -> getByGroup();
+                case 5 -> getById();
+                case 6 -> update();
+                case 7 -> getAllCoursesOfStudent();
+                case 0 -> System.exit(1);
+                default -> System.out.println("Операция не поддерживается.");
+            }
+            System.out.println("Хотите продолжить? 1-да, другие числа-нет");
+            choose = Integer.parseInt(scanner.nextLine());
+
+        } while (choose == 1);
+    }
+
 
     private void createStudent(){
         System.out.println("Введите имя:");
@@ -325,4 +327,29 @@ public class Controller {
         }
         System.out.println("Студент не удален(а) с курса. Такого студента/курса не существует.");
     }
+
+    public void getAllStudentsOnCourse(){
+        System.out.println("Введите id курса, студентов которого хотите получить:");
+        int courseId = Integer.parseInt(scanner.nextLine());
+        List<Student>students = mainService.getAllStudentsOnCourse(courseId);
+        if(students != null){
+            students.forEach(System.out::println);
+            return;
+        }
+        System.out.println("Неправильный id курса.");
+    }
+
+    public void getAllCoursesOfStudent(){
+        System.out.println("Введите id студента, курсы которого хотите получить:");
+        int studentId = Integer.parseInt(scanner.nextLine());
+        List<Course>courses = mainService.getAllCoursesOfStudent(studentId);
+        if(courses != null){
+            courses.forEach(System.out::println);
+            return;
+        }
+        System.out.println("Неправильный id студента.");
+    }
+
+
+
 }

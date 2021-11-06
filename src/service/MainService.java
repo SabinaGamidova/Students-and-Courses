@@ -131,6 +131,17 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
         return false;
     }
 
+    @Override
+    public List<Course> getAllCoursesOfStudent(int studentId){
+            return studentOperations.getAllCoursesOfStudent(studentId);
+    }
+
+    @Override
+    public List<Student> getAllStudentsOnCourse(int courseId){
+        return courseOperations.getAllStudentsOnCourse(courseId);
+    }
+
+
 
     private boolean updateCourseToStudent(Student student, Course course) {
         List<Course> courses = student.getCourses();
