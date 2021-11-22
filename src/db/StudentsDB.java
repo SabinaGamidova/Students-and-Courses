@@ -17,18 +17,20 @@ public StudentsDB() {
     }
 
 
-    public void createStudent(Student s){
+    public Student createStudent(Student s){
         s.setId(generateId((int) (Math.random() * 10000000)));
         students.add(s);
+        return s;
     }
 
-    public boolean deleteStudent(int id){
+    public void deleteStudent(int id){
         for (Student s:students) {
             if(s.getId() == id){
-                return students.remove(s);
+                students.remove(s);
+                return;
             }
         }
-        return false;
+        throw new RuntimeException("Студента с таким id не существует.");
     }
 
     public List<Student> getStudentByGroup(int group) {
@@ -47,26 +49,26 @@ public StudentsDB() {
                 return s;
             }
         }
-        return null;
+        throw new RuntimeException("Студента с таким id не существует.");
     }
 
 
-    public boolean updateStudent(Student student) {
+    public void updateStudent(Student student) {
         for (Student s:students) {
             if(s.getId() == student.getId()){
                 //1 способ
                 students.remove(s);
                 students.add(student);
+                return;
                 //2 способ
                 /*s.setFirstname(student.getFirstname());
                 s.setSurname(student.getSurname());
                 s.setCourse(student.getCourse());
                 s.setGroup(student.getGroup());*/
-                return true;
             }
 
         }
-            return false;
+        throw new RuntimeException("Студента с таким id не существует.");
     }
 
     private int generateId(int id){

@@ -14,8 +14,8 @@ public class StudentService implements StudentOperations{
     }
 
     @Override
-    public boolean deleteStudent(int id){
-        return db.deleteStudent(id);
+    public void deleteStudent(int id){
+        db.deleteStudent(id);
     }
 
     @Override
@@ -25,12 +25,9 @@ public class StudentService implements StudentOperations{
 
 
     @Override
-    public boolean createStudent(Student s) {
-        if(validate(s)){
-            db.createStudent(s);
-            return true;
-        }
-        return false;
+    public Student createStudent(Student s) {
+        validate(s);
+        return db.createStudent(s);
     }
 
     @Override
@@ -38,7 +35,7 @@ public class StudentService implements StudentOperations{
         if(group > 0 && group < 6) {
             return db.getStudentByGroup(group);
         }
-        return null;
+        throw new RuntimeException("Группа студента написана некорректно.");
     }
 
     @Override
@@ -47,27 +44,24 @@ public class StudentService implements StudentOperations{
     }
 
     @Override
-    public boolean updateStudent(Student student){
-        if(validate(student)) {
-            return db.updateStudent(student);
-        }
-        return false;
+    public void updateStudent(Student student){
+        validate(student);
+        db.updateStudent(student);
     }
 
-    private boolean validate(Student s) {
+    private void validate(Student s) {
         if(s == null){
-            return false;
+            throw new RuntimeException("Студента == null.");
         }
         if(s.getFirstname() == null || s.getFirstname().isBlank()){
-            return false;
+            throw new RuntimeException("Имя студента написано некорректно.");
         }
         if(s.getSurname() == null || s.getSurname().isBlank()){
-            return false;
+            throw new RuntimeException("Фамилия студента написана некорректно.");
         }
         if (s.getGroup() < 0 || s.getGroup() > 6) {
-            return false;
+            throw new RuntimeException("Группа студента написана некорректно.");
         }
-        return true;
     }
 
     @Override

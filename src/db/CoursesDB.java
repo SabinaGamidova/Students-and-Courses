@@ -3,7 +3,6 @@ package db;
 import model.Course;
 import model.Student;
 import model.Category;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +17,10 @@ public class CoursesDB {
         return courses;
     }
 
-    public void create(Course course){
+    public Course create(Course course){
         course.setId(generateId((int) (Math.random() * 10000000)));
         courses.add(course);
+        return course;
     }
 
     private int generateId(int id){
@@ -33,13 +33,14 @@ public class CoursesDB {
     }
 
 
-    public boolean delete(int id){
+    public void delete(int id){
         for (Course course: courses) {
             if(course.getId() == id){
-                return courses.remove(course);
+                courses.remove(course);
+                return;
             }
         }
-        return false;
+        throw new RuntimeException("Курса с таким id не существует.");
     }
 
 
@@ -49,19 +50,19 @@ public class CoursesDB {
                 return course;
             }
         }
-        return null;
+        throw new RuntimeException("Курса с таким id не существует.");
     }
 
 
-    public boolean update(Course course) {
+    public void update(Course course) {
         for (Course item: courses) {
             if(course.getId() == item.getId()) {
                 courses.remove(item);
                 courses.add(course);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new RuntimeException("Курса с таким id не существует.");
     }
 
     public List<Course> getByCategory(Category category){

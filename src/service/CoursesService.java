@@ -18,12 +18,9 @@ public class CoursesService implements CourseOperations{
     }
 
     @Override
-    public boolean createCourse(Course course){
-        if(validate(course)){
-            db.create(course);
-            return true;
-        }
-        return false;
+    public Course createCourse(Course course){
+        validate(course);
+        return db.create(course);
     }
 
     @Override
@@ -32,8 +29,8 @@ public class CoursesService implements CourseOperations{
     }
 
     @Override
-    public boolean deleteCourse(int id){
-        return db.delete(id);
+    public void deleteCourse(int id){
+         db.delete(id);
     }
 
 
@@ -44,11 +41,9 @@ public class CoursesService implements CourseOperations{
 
 
     @Override
-    public boolean updateCourse(Course course){
-        if(validate(course)) {
-            return db.update(course);
-        }
-        return false;
+    public void updateCourse(Course course){
+        validate(course);
+        db.update(course);
     }
 
 
@@ -61,20 +56,21 @@ public class CoursesService implements CourseOperations{
     }
 
 
-    private boolean validate(Course c) {
+    private void validate(Course c) {
         if(c == null){
-            return false;
+            throw new RuntimeException("Курс == null.");
         }
         if(c.getName() == null || c.getName().isBlank()){
-            return false;
+            throw new RuntimeException("Название курса написано некорректно.");
+
         }
         if(c.getTeacher() == null || c.getTeacher().isBlank()){
-            return false;
+            throw new RuntimeException("Имя преподавателя курса написано некорректно.");
+
         }
         if(c.getCategory() == null){
-            return false;
+            throw new RuntimeException("Категория курса выбрана некорректно.");
         }
-        return true;
     }
 
     @Override

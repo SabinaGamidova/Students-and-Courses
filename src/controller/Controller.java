@@ -5,6 +5,7 @@ import model.Student;
 import service.*;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 import static model.Category.*;
 
@@ -94,11 +95,14 @@ public class Controller {
         System.out.println("Введите номер группы:");
         int group = Integer.parseInt(scanner.nextLine());
         Student student = new Student(firstname, surname, group);
-        if(mainService.createStudent(student)){
+        try{
+            student = mainService.createStudent(student);
             System.out.println("Данные про ученика успешно созданы.");
-            return;
+            System.out.println(student.toString());
         }
-        System.out.println("Ошибка при сохранении данных об ученике.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
@@ -113,92 +117,97 @@ public class Controller {
         getAll();
         System.out.println("Введите id ученика, которого хотите удалить:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(mainService.deleteStudent(id)){
+        try{
+            mainService.deleteStudent(id);
             System.out.println("Ученик успешно удалён.");
-            return;
         }
-        System.out.println("Ученик не удалён.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
-
+//переделать в mainservice под exception
     private void getByGroup() {
         getAll();
         System.out.println("Чтобы получить список учеников определенной группы, сначала введите номер группы:");
         int group = Integer.parseInt(scanner.nextLine());
-        if(mainService.getStudentByGroup(group) != null){
+
+        /*mainService.getStudentByGroup(group);
             for (Student student : mainService.getStudentByGroup(group)) {
                 System.out.println(student.toString());
 
             }
             return;
         }
-        System.out.println("Вы ввели неправильный номер группы.");
+        System.out.println("Вы ввели неправильный номер группы.");*/
     }
 
     private void getById() {
-        System.out.println("Введите id ученика, которого хотите найти:");
-        int id = Integer.parseInt(scanner.nextLine());
-        if(mainService.getStudentById(id) != null){
-            System.out.println(mainService.getStudentById(id).toString());
-            return;
+        try{
+            System.out.println("Введите id ученика, которого хотите найти:");
+            int id = Integer.parseInt(scanner.nextLine());
+            Student student = mainService.getStudentById(id);
+            System.out.println(student.toString());
         }
-        System.out.println("Вы ввели неправильный id.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
     private void update() {
-        getAll();
-        System.out.println("Введите id студента, которого хотите изменить:");
-        int id = Integer.parseInt(scanner.nextLine());
-        Student student = mainService.getStudentById(id);
-        if(student == null) {
-            System.out.println("Неправильный id");
-            return;
-        }
-        System.out.println("Что хотите изменить? 1 - Имя, 2 - Фамилию, 3 - Курс, 4 - Группу.");
-        int choose = Integer.parseInt(scanner.nextLine());
-        switch(choose) {
-            case 1 -> {
-                System.out.println("Введите новое имя ученика:");
-                String firstname = scanner.nextLine();
-                student.setFirstname(firstname);
-            }
-            case 2 -> {
-                System.out.println("Введите новую фамилию ученика:");
-                String surname = scanner.nextLine();
-                student.setSurname(surname);
-            }
-            case 4-> {
-                System.out.println("Введите новый номер группы ученика:");
-                int group = Integer.parseInt(scanner.nextLine());
-                student.setGroup(group);
+        try {
+            getAll();
+            System.out.println("Введите id студента, которого хотите изменить:");
+            int id = Integer.parseInt(scanner.nextLine());
+            Student student = mainService.getStudentById(id);
+            System.out.println("Что хотите изменить? 1 - Имя, 2 - Фамилию, 3 - Курс, 4 - Группу.");
+            int choose = Integer.parseInt(scanner.nextLine());
+            switch(choose) {
+                case 1 -> {
+                    System.out.println("Введите новое имя ученика:");
+                    String firstname = scanner.nextLine();
+                    student.setFirstname(firstname);
                 }
-            default-> {
-                System.out.println("Неизвестная операция.");
-                return;
+                case 2 -> {
+                    System.out.println("Введите новую фамилию ученика:");
+                    String surname = scanner.nextLine();
+                    student.setSurname(surname);
+                }
+                case 4-> {
+                    System.out.println("Введите новый номер группы ученика:");
+                    int group = Integer.parseInt(scanner.nextLine());
+                    student.setGroup(group);
+                }
+                default-> {
+                    System.out.println("Неизвестная операция.");
+                    return;
+                }
             }
-        }
-        if(mainService.updateStudent(student)){
+            mainService.updateStudent(student);
             System.out.println("Обновление прошло успешно. " + student.toString());
-            return;
         }
-        System.out.println("Обновление неуспешно.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
     private void createCourse(){
-        System.out.println("Введите название:");
-        String name = scanner.nextLine();
-        System.out.println("Введите категорию: 1)Математика, 2)Английский, 3)Физика, 4)Биология");
-        Integer category = Integer.parseInt(scanner.nextLine());
-        System.out.println("Введите данные о преподавателе:");
-        String teacher = scanner.nextLine();
-        Course course = new Course(name, chooseCategory(category), teacher);
-        if(mainService.createCourse(course)){
+        try{
+            System.out.println("Введите название:");
+            String name = scanner.nextLine();
+            System.out.println("Введите категорию: 1)Математика, 2)Английский, 3)Физика, 4)Биология");
+            Integer category = Integer.parseInt(scanner.nextLine());
+            System.out.println("Введите данные о преподавателе:");
+            String teacher = scanner.nextLine();
+            Course course = new Course(name, chooseCategory(category), teacher);
+            mainService.createCourse(course);
             System.out.println("Данные про курс успешно созданы.");
-            return;
         }
-        System.out.println("Ошибка при сохранении данных о курсе.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
     private Category chooseCategory(Integer num){
@@ -233,11 +242,13 @@ public class Controller {
         getAllCourses();
         System.out.println("Введите id курса, который хотите удалить:");
         int id = Integer.parseInt(scanner.nextLine());
-        if(mainService.deleteCourse(id)){
+        try{
+            mainService.deleteCourse(id);
             System.out.println("Курс успешно удалён.");
-            return;
         }
-        System.out.println("Курс не удалён.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
@@ -253,28 +264,31 @@ public class Controller {
     }
 
     private void getCourseById() {
-        System.out.println("Введите id курса, который хотите найти:");
-        int id = Integer.parseInt(scanner.nextLine());
-        if(mainService.getCourseById(id) != null){
-            System.out.println(mainService.getCourseById(id).toString());
-            return;
+        try{
+            System.out.println("Введите id курса, который хотите найти:");
+            int id = Integer.parseInt(scanner.nextLine());
+            Course course = mainService.getCourseById(id);
+            System.out.println(course.toString());
         }
-        System.out.println("Вы ввели неправильный id.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
     private void updateCourse() {
+        try{
         getAllCourses();
         System.out.println("Введите id курса, который хотите изменить:");
         int id = Integer.parseInt(scanner.nextLine());
         Course course = mainService.getCourseById(id);
-        if(course == null) {
+        if (course == null) {
             System.out.println("Неправильный id");
             return;
         }
         System.out.println("Что хотите изменить? 1 - Название курса, 2 - Категория курса, 3 - Имя преподавателя");
         int choose = Integer.parseInt(scanner.nextLine());
-        switch(choose) {
+        switch (choose) {
             case 1 -> {
                 System.out.println("Введите новое название курса:");
                 String name = scanner.nextLine();
@@ -285,21 +299,23 @@ public class Controller {
                 Integer category = Integer.parseInt(scanner.nextLine());
                 course.setCategory(chooseCategory(category));
             }
-            case 3-> {
+            case 3 -> {
                 System.out.println("Введите новое имя преподавателя:");
                 String teacher = scanner.nextLine();
                 course.setTeacher(teacher);
             }
-            default-> {
+            default -> {
                 System.out.println("Неизвестная операция.");
                 return;
             }
         }
-        if(mainService.updateCourse(course)){
-            System.out.println("Обновление прошло успешно. " + course.toString());
-            return;
+        mainService.updateCourse(course);
+        System.out.println("Обновление прошло успешно. " + course.toString());
         }
-        System.out.println("Обновление неуспешно.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
+
     }
 
 
@@ -328,25 +344,28 @@ public class Controller {
     }
 
     public void getAllStudentsOnCourse(){
-        System.out.println("Введите id курса, студентов которого хотите получить:");
-        int courseId = Integer.parseInt(scanner.nextLine());
-        List<Student>students = mainService.getAllStudentsOnCourse(courseId);
-        if(students != null){
-            students.forEach(System.out::println);
-            return;
+        try{
+            System.out.println("Введите id курса, студентов которого хотите получить:");
+            int courseId = Integer.parseInt(scanner.nextLine());
+            List<Student>students = mainService.getAllStudentsOnCourse(courseId);
+                students.forEach(System.out::println);
         }
-        System.out.println("Неправильный id курса.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
     public void getAllCoursesOfStudent(){
-        System.out.println("Введите id студента, курсы которого хотите получить:");
-        int studentId = Integer.parseInt(scanner.nextLine());
-        List<Course>courses = mainService.getAllCoursesOfStudent(studentId);
-        if(courses != null){
+        try{
+            System.out.println("Введите id студента, курсы которого хотите получить:");
+            int studentId = Integer.parseInt(scanner.nextLine());
+            List<Course>courses = mainService.getAllCoursesOfStudent(studentId);
             courses.forEach(System.out::println);
             return;
         }
-        System.out.println("Неправильный id студента.");
+        catch(Exception exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
 
