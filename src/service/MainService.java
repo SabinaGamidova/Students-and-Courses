@@ -21,7 +21,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public Course createCourse(Course course) throws CourseException {
+    public Course createCourse(Course course) throws CourseException, CategoryException{
         return courseOperations.createCourse(course);
     }
 
@@ -29,7 +29,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     public List<Course> getAllCourses() { return courseOperations.getAllCourses();}
 
     @Override
-    public void deleteCourse(int id) throws CourseException, StudentException{
+    public void deleteCourse(int id) throws CourseException, StudentException, GroupException, CategoryException{
         Course course = courseOperations.getCourseById(id);
         List<Student> students = course.getStudents();
         for (Student student : students) {
@@ -42,7 +42,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     public Course getCourseById(int id) throws CourseException {return courseOperations.getCourseById(id);}
 
     @Override
-    public void updateCourse(Course course) throws CourseException{
+    public void updateCourse(Course course) throws CourseException, CategoryException{
         courseOperations.updateCourse(course);
         List<Student> students = course.getStudents();
         for (Student student : students) {
@@ -57,7 +57,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     public List<Student> getAllStudents() { return studentOperations.getAllStudents(); }
 
     @Override
-    public Student createStudent(Student s) throws StudentException{return studentOperations.createStudent(s);}
+    public Student createStudent(Student s) throws StudentException, GroupException{return studentOperations.createStudent(s);}
 
     @Override
     public List<Student> getStudentByGroup(int group) throws GroupException {
@@ -71,7 +71,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
 
 
     @Override
-    public void updateStudent(Student student) throws StudentException{
+    public void updateStudent(Student student) throws StudentException, GroupException{
         studentOperations.updateStudent(student);
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
@@ -80,7 +80,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public void deleteStudent(int id) throws StudentException, CourseException{
+    public void deleteStudent(int id) throws StudentException, CourseException, GroupException, CategoryException{
         Student student = studentOperations.getStudentById(id);
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
@@ -90,7 +90,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public void addStudentOnCourse(int studentId, int courseId) throws StudentException, CourseException{
+    public void addStudentOnCourse(int studentId, int courseId) throws StudentException, CourseException, GroupException, CategoryException{
         Student student = getStudentById(studentId);
         Course course = getCourseById(courseId);
         if (student != null && course != null) {
@@ -111,7 +111,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
 
 
     @Override
-    public void deleteStudentFromCourse(int studentId, int courseId) throws CourseException, StudentException{
+    public void deleteStudentFromCourse(int studentId, int courseId) throws CourseException, StudentException, GroupException, CategoryException{
         Student student = getStudentById(studentId);
         Course course = getCourseById(courseId);
         if (student != null && course != null) {

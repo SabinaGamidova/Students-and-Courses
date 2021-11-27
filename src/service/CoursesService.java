@@ -20,7 +20,7 @@ public class CoursesService implements CourseOperations{
     }
 
     @Override
-    public Course createCourse(Course course)throws CourseException{
+    public Course createCourse(Course course)throws CourseException, CategoryException{
         validate(course);
         return db.create(course);
     }
@@ -43,7 +43,7 @@ public class CoursesService implements CourseOperations{
 
 
     @Override
-    public void updateCourse(Course course) throws CourseException {
+    public void updateCourse(Course course) throws CourseException, CategoryException {
         validate(course);
         db.update(course);
     }
@@ -58,7 +58,7 @@ public class CoursesService implements CourseOperations{
     }
 
 
-    private void validate(Course c) throws CourseException{
+    private void validate(Course c) throws CourseException, CategoryException{
         if(c == null){
             throw new CourseException("Курс == null.");
         }
@@ -69,6 +69,9 @@ public class CoursesService implements CourseOperations{
         if(c.getTeacher() == null || c.getTeacher().isBlank()){
             throw new CourseException("Имя преподавателя курса " + c.getTeacher() +" написано некорректно.");
 
+        }
+        if(c.getCategory() == null){
+            throw new CategoryException("Категория курса выбрана некорректно.");
         }
     }
 

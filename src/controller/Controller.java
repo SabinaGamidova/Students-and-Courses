@@ -107,6 +107,9 @@ public class Controller {
         catch(StudentException studentException){
             System.out.println(studentException.getMessage());
         }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
     }
 
 
@@ -130,6 +133,12 @@ public class Controller {
         }
         catch(CourseException courseException){
             System.out.println(courseException.getMessage());
+        }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
         }
     }
 
@@ -197,6 +206,9 @@ public class Controller {
         catch(StudentException studentException){
             System.out.println(studentException.getMessage());
         }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
     }
 
 
@@ -214,6 +226,9 @@ public class Controller {
         }
         catch(CourseException courseException){
             System.out.println(courseException.getMessage());
+        }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
         }
     }
 
@@ -258,6 +273,12 @@ public class Controller {
         }
         catch(StudentException studentException){
             System.out.println(studentException.getMessage());
+        }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
         }
     }
 
@@ -328,6 +349,9 @@ public class Controller {
         catch(CourseException courseException){
             System.out.println(courseException.getMessage());
         }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
+        }
 
     }
 
@@ -347,6 +371,12 @@ public class Controller {
         catch(StudentException studentException){
             System.out.println(studentException.getMessage());
         }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
+        }
     }
 
 
@@ -364,6 +394,12 @@ public class Controller {
         }
         catch(StudentException studentException){
             System.out.println(studentException.getMessage());
+        }
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
         }
     }
 

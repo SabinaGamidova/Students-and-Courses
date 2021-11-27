@@ -27,7 +27,7 @@ public class StudentService implements StudentOperations{
 
 
     @Override
-    public Student createStudent(Student s) throws StudentException{
+    public Student createStudent(Student s) throws StudentException, GroupException{
         validate(s);
         return db.createStudent(s);
     }
@@ -47,12 +47,12 @@ public class StudentService implements StudentOperations{
     }
 
     @Override
-    public void updateStudent(Student student) throws StudentException{
+    public void updateStudent(Student student) throws StudentException, GroupException{
         validate(student);
         db.updateStudent(student);
     }
 
-    private void validate(Student s) throws StudentException{
+    private void validate(Student s) throws StudentException, GroupException{
         if(s == null){
             throw new StudentException("Студент == null.");
         }
@@ -61,6 +61,9 @@ public class StudentService implements StudentOperations{
         }
         if(s.getSurname() == null || s.getSurname().isBlank()){
             throw new StudentException("Фамилия студента: " + s.getSurname() +" написана некорректно.");
+        }
+        if(s.getGroup() < 0 || s.getGroup() > 6) {
+            throw new GroupException("Группа студента написана некорректно.");
         }
     }
 
