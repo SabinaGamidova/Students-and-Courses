@@ -1,6 +1,8 @@
 package service;
 
 import db.StudentsDB;
+import exceptions.GroupException;
+import exceptions.StudentException;
 import model.Course;
 import model.Student;
 
@@ -14,7 +16,7 @@ public class StudentService implements StudentOperations{
     }
 
     @Override
-    public void deleteStudent(int id){
+    public void deleteStudent(int id) throws StudentException{
         db.deleteStudent(id);
     }
 
@@ -25,47 +27,45 @@ public class StudentService implements StudentOperations{
 
 
     @Override
-    public Student createStudent(Student s) {
+    public Student createStudent(Student s) throws StudentException{
         validate(s);
         return db.createStudent(s);
     }
 
+
     @Override
-    public List<Student> getStudentByGroup(int group){
+    public List<Student> getStudentByGroup(int group) throws GroupException{
         if(group > 0 && group < 6) {
             return db.getStudentByGroup(group);
         }
-        throw new RuntimeException("Группа студента написана некорректно.");
+        throw new GroupException("Группа студента написана некорректно.");
     }
 
     @Override
-    public Student getStudentById(int id){
+    public Student getStudentById(int id) throws StudentException{
          return db.getStudentById(id);
     }
 
     @Override
-    public void updateStudent(Student student){
+    public void updateStudent(Student student) throws StudentException{
         validate(student);
         db.updateStudent(student);
     }
 
-    private void validate(Student s) {
+    private void validate(Student s) throws StudentException{
         if(s == null){
-            throw new RuntimeException("Студента == null.");
+            throw new StudentException("Студент == null.");
         }
         if(s.getFirstname() == null || s.getFirstname().isBlank()){
-            throw new RuntimeException("Имя студента написано некорректно.");
+            throw new StudentException("Имя студента: " + s.getFirstname() + " написано некорректно.");
         }
         if(s.getSurname() == null || s.getSurname().isBlank()){
-            throw new RuntimeException("Фамилия студента написана некорректно.");
-        }
-        if (s.getGroup() < 0 || s.getGroup() > 6) {
-            throw new RuntimeException("Группа студента написана некорректно.");
+            throw new StudentException("Фамилия студента: " + s.getSurname() +" написана некорректно.");
         }
     }
 
     @Override
-    public List<Course> getAllCoursesOfStudent(int id){
+    public List<Course> getAllCoursesOfStudent(int id) throws StudentException{
         Student student = getStudentById(id);
         if(student != null){
             return student.getCourses();

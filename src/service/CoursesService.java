@@ -1,6 +1,8 @@
 package service;
 
 import db.CoursesDB;
+import exceptions.CategoryException;
+import exceptions.CourseException;
 import model.Category;
 import model.Course;
 import model.Student;
@@ -18,7 +20,7 @@ public class CoursesService implements CourseOperations{
     }
 
     @Override
-    public Course createCourse(Course course){
+    public Course createCourse(Course course)throws CourseException{
         validate(course);
         return db.create(course);
     }
@@ -29,52 +31,49 @@ public class CoursesService implements CourseOperations{
     }
 
     @Override
-    public void deleteCourse(int id){
+    public void deleteCourse(int id) throws CourseException{
          db.delete(id);
     }
 
 
     @Override
-    public Course getCourseById(int id){
+    public Course getCourseById(int id) throws CourseException{
         return db.getById(id);
     }
 
 
     @Override
-    public void updateCourse(Course course){
+    public void updateCourse(Course course) throws CourseException {
         validate(course);
         db.update(course);
     }
 
 
     @Override
-    public List<Course> getCourseByCategory(Category category){
+    public List<Course> getCourseByCategory(Category category) throws CategoryException{
         if(category != null) {
             return db.getByCategory(category);
         }
-        return new ArrayList<>();
+        throw new CategoryException("Категория курса выбрана некорректно.");
     }
 
 
-    private void validate(Course c) {
+    private void validate(Course c) throws CourseException{
         if(c == null){
-            throw new RuntimeException("Курс == null.");
+            throw new CourseException("Курс == null.");
         }
         if(c.getName() == null || c.getName().isBlank()){
-            throw new RuntimeException("Название курса написано некорректно.");
+            throw new CourseException("Название курса " +c.getName()+ " написано некорректно.");
 
         }
         if(c.getTeacher() == null || c.getTeacher().isBlank()){
-            throw new RuntimeException("Имя преподавателя курса написано некорректно.");
+            throw new CourseException("Имя преподавателя курса " + c.getTeacher() +" написано некорректно.");
 
-        }
-        if(c.getCategory() == null){
-            throw new RuntimeException("Категория курса выбрана некорректно.");
         }
     }
 
     @Override
-    public List<Student> getAllStudentsOnCourse(int id){
+    public List<Student> getAllStudentsOnCourse(int id) throws CourseException{
         Course course = getCourseById(id);
         if(course != null){
             return course.getStudents();

@@ -1,4 +1,8 @@
 package controller;
+import exceptions.CategoryException;
+import exceptions.CourseException;
+import exceptions.GroupException;
+import exceptions.StudentException;
 import model.Category;
 import model.Course;
 import model.Student;
@@ -100,8 +104,8 @@ public class Controller {
             System.out.println("Данные про ученика успешно созданы.");
             System.out.println(student.toString());
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
         }
     }
 
@@ -121,25 +125,28 @@ public class Controller {
             mainService.deleteStudent(id);
             System.out.println("Ученик успешно удалён.");
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
+        }
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
         }
     }
 
-//переделать в mainservice под exception
     private void getByGroup() {
         getAll();
         System.out.println("Чтобы получить список учеников определенной группы, сначала введите номер группы:");
         int group = Integer.parseInt(scanner.nextLine());
-
-        /*mainService.getStudentByGroup(group);
+        try{
+            mainService.getStudentByGroup(group);
             for (Student student : mainService.getStudentByGroup(group)) {
                 System.out.println(student.toString());
 
             }
-            return;
         }
-        System.out.println("Вы ввели неправильный номер группы.");*/
+        catch(GroupException groupException){
+            System.out.println(groupException.getMessage());
+        }
     }
 
     private void getById() {
@@ -149,8 +156,8 @@ public class Controller {
             Student student = mainService.getStudentById(id);
             System.out.println(student.toString());
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
         }
     }
 
@@ -187,8 +194,8 @@ public class Controller {
             mainService.updateStudent(student);
             System.out.println("Обновление прошло успешно. " + student.toString());
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
         }
     }
 
@@ -205,28 +212,28 @@ public class Controller {
             mainService.createCourse(course);
             System.out.println("Данные про курс успешно созданы.");
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
         }
     }
 
     private Category chooseCategory(Integer num){
-        switch(num){
-            case 1 -> {
-                return MATH;
+            switch(num){
+                case 1 -> {
+                    return MATH;
+                }
+                case 2 -> {
+                    return ENGLISH;
+                }
+                case 3 -> {
+                    return PHYSICS;
+                }
+                case 4 -> {
+                    return BIOLOGY;
+                }
+                default -> {System.out.println("Неизвестная операция!"); System.exit(1);}
             }
-            case 2 -> {
-                return ENGLISH;
-            }
-            case 3 -> {
-                return PHYSICS;
-            }
-            case 4 -> {
-                return BIOLOGY;
-            }
-            default -> {System.out.println("Неизвестная операция!"); System.exit(1);}
-        }
-        return null;
+            return null;
     }
 
 
@@ -246,22 +253,28 @@ public class Controller {
             mainService.deleteCourse(id);
             System.out.println("Курс успешно удалён.");
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
+        }
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
         }
     }
 
 
 
     private void getByCategory() {
-        System.out.println("Введите категорию курса, который хотите найти: 1 - Математика, 2 - Английский, 3 - Физика, 4 - Биология.");
-        Integer category = Integer.parseInt(scanner.nextLine());
-        if(mainService.getCourseByCategory(chooseCategory(category)) != null){
-            System.out.println(mainService.getCourseByCategory(chooseCategory(category)).toString());
-            return;
+        try {
+            System.out.println("Введите категорию курса, который хотите найти: 1 - Математика, 2 - Английский, 3 - Физика, 4 - Биология.");
+            Integer category = Integer.parseInt(scanner.nextLine());
+            List<Course>courses = mainService.getCourseByCategory(chooseCategory(category));
+            courses.forEach(System.out::println);
+            }
+        catch(CategoryException categoryException){
+            System.out.println(categoryException.getMessage());
         }
-        System.out.println("Вы ввели неправильную категорию.");
     }
+
 
     private void getCourseById() {
         try{
@@ -270,8 +283,8 @@ public class Controller {
             Course course = mainService.getCourseById(id);
             System.out.println(course.toString());
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
         }
     }
 
@@ -312,36 +325,48 @@ public class Controller {
         mainService.updateCourse(course);
         System.out.println("Обновление прошло успешно. " + course.toString());
         }
-        catch(Exception exception){
-            System.out.println(exception.getMessage());
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
         }
 
     }
 
 
     public void addStudentOnCourse() {
-        System.out.println("Введите id студента:");
-        int studentId = Integer.parseInt(scanner.nextLine());
-        System.out.println("Введите id курса:");
-        int courseId = Integer.parseInt(scanner.nextLine());
-        if(mainService.addStudentOnCourse(studentId, courseId)){
+        try {
+            System.out.println("Введите id студента:");
+            int studentId = Integer.parseInt(scanner.nextLine());
+            System.out.println("Введите id курса:");
+            int courseId = Integer.parseInt(scanner.nextLine());
+            mainService.addStudentOnCourse(studentId, courseId);
             System.out.println("Студент успешно добавлен(а) на курс.");
-            return;
         }
-        System.out.println("Студент не добавлен(а) на курс. Такого студента/курса не существует.");
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
+        }
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
+        }
     }
 
-    public void deleteStudentFromCourse() {
-        System.out.println("Введите id студента:");
-        int studentId = Integer.parseInt(scanner.nextLine());
-        System.out.println("Введите id курса:");
-        int courseId = Integer.parseInt(scanner.nextLine());
-        if(mainService.deleteStudentFromCourse(studentId, courseId)){
+
+    public void deleteStudentFromCourse(){
+        try {
+            System.out.println("Введите id студента:");
+            int studentId = Integer.parseInt(scanner.nextLine());
+            System.out.println("Введите id курса:");
+            int courseId = Integer.parseInt(scanner.nextLine());
+            mainService.deleteStudentFromCourse(studentId, courseId);
             System.out.println("Студент успешно удален(а) с курса.");
-            return;
         }
-        System.out.println("Студент не удален(а) с курса. Такого студента/курса не существует.");
+        catch(CourseException courseException){
+            System.out.println(courseException.getMessage());
+        }
+        catch(StudentException studentException){
+            System.out.println(studentException.getMessage());
+        }
     }
+
 
     public void getAllStudentsOnCourse(){
         try{
@@ -361,7 +386,6 @@ public class Controller {
             int studentId = Integer.parseInt(scanner.nextLine());
             List<Course>courses = mainService.getAllCoursesOfStudent(studentId);
             courses.forEach(System.out::println);
-            return;
         }
         catch(Exception exception){
             System.out.println(exception.getMessage());

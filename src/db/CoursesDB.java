@@ -1,5 +1,7 @@
 package db;
 
+import exceptions.CategoryException;
+import exceptions.CourseException;
 import model.Course;
 import model.Student;
 import model.Category;
@@ -33,28 +35,28 @@ public class CoursesDB {
     }
 
 
-    public void delete(int id){
+    public void delete(int id) throws CourseException {
         for (Course course: courses) {
             if(course.getId() == id){
                 courses.remove(course);
                 return;
             }
         }
-        throw new RuntimeException("Курса с таким id не существует.");
+        throw new CourseException(id, "Курса с таким id не существует.");
     }
 
 
-    public Course getById(int id) {
+    public Course getById(int id) throws CourseException{
         for (Course course: courses) {
             if(course.getId() == id){
                 return course;
             }
         }
-        throw new RuntimeException("Курса с таким id не существует.");
+        throw new CourseException(id, "Курса с таким id не существует.");
     }
 
 
-    public void update(Course course) {
+    public void update(Course course) throws CourseException{
         for (Course item: courses) {
             if(course.getId() == item.getId()) {
                 courses.remove(item);
@@ -62,17 +64,17 @@ public class CoursesDB {
                 return;
             }
         }
-        throw new RuntimeException("Курса с таким id не существует.");
+        throw new CourseException(course.getId(), course.getName(), "Курса с такими данными не существует.");
     }
 
     public List<Course> getByCategory(Category category){
         List<Course>items = new ArrayList<>();
-        for (Course c : courses) {
-            if(c.getCategory().equals(category)){
-                items.add(c);
+            for (Course c : courses) {
+                if (c.getCategory().equals(category)) {
+                    items.add(c);
+                }
             }
-        }
-        return items;
+            return items;
     }
 
 

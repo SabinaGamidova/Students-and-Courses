@@ -1,5 +1,7 @@
 package service;
 
+import exceptions.CourseException;
+import exceptions.StudentException;
 import model.Category;
 import model.Course;
 import model.Student;
@@ -7,6 +9,6 @@ import model.Student;
 import java.util.List;
 
 public interface MainOperations{
-     boolean addStudentOnCourse(int studentId, int courseId);
-     boolean deleteStudentFromCourse(int studentId, int courseId);
+     void addStudentOnCourse(int studentId, int courseId) throws CourseException, StudentException;
+     void deleteStudentFromCourse(int studentId, int courseId) throws CourseException, StudentException;
 }

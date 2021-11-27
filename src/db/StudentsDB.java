@@ -1,4 +1,5 @@
 package db;
+import exceptions.StudentException;
 import model.Course;
 import model.Student;
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ public StudentsDB() {
         return s;
     }
 
-    public void deleteStudent(int id){
+    public void deleteStudent(int id) throws StudentException{
         for (Student s:students) {
             if(s.getId() == id){
                 students.remove(s);
                 return;
             }
         }
-        throw new RuntimeException("Студента с таким id не существует.");
+        throw new StudentException(id, "Студента с таким id не существует.");
     }
 
     public List<Student> getStudentByGroup(int group) {
@@ -43,17 +44,17 @@ public StudentsDB() {
         return pupils;
     }
 
-    public Student getStudentById(int id) {
+    public Student getStudentById(int id) throws StudentException{
         for (Student s:students) {
             if(s.getId() == id){
                 return s;
             }
         }
-        throw new RuntimeException("Студента с таким id не существует.");
+        throw new StudentException(id, "Студента с таким id не существует.");
     }
 
 
-    public void updateStudent(Student student) {
+    public void updateStudent(Student student) throws StudentException{
         for (Student s:students) {
             if(s.getId() == student.getId()){
                 //1 способ
@@ -68,7 +69,7 @@ public StudentsDB() {
             }
 
         }
-        throw new RuntimeException("Студента с таким id не существует.");
+        throw new StudentException(student.getId(), student.getFirstname(), student.getSurname(), "Студента с такими данными не существует.");
     }
 
     private int generateId(int id){

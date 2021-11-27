@@ -1,5 +1,9 @@
 package service;
 
+import exceptions.CategoryException;
+import exceptions.CourseException;
+import exceptions.GroupException;
+import exceptions.StudentException;
 import model.Category;
 import model.Course;
 import model.Student;
@@ -17,7 +21,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public Course createCourse(Course course) {
+    public Course createCourse(Course course) throws CourseException {
         return courseOperations.createCourse(course);
     }
 
@@ -25,7 +29,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     public List<Course> getAllCourses() { return courseOperations.getAllCourses();}
 
     @Override
-    public void deleteCourse(int id) {
+    public void deleteCourse(int id) throws CourseException, StudentException{
         Course course = courseOperations.getCourseById(id);
         List<Student> students = course.getStudents();
         for (Student student : students) {
@@ -35,10 +39,10 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public Course getCourseById(int id) {return courseOperations.getCourseById(id);}
+    public Course getCourseById(int id) throws CourseException {return courseOperations.getCourseById(id);}
 
     @Override
-    public void updateCourse(Course course) {
+    public void updateCourse(Course course) throws CourseException{
         courseOperations.updateCourse(course);
         List<Student> students = course.getStudents();
         for (Student student : students) {
@@ -47,27 +51,27 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public List<Course> getCourseByCategory(Category category) {return courseOperations.getCourseByCategory(category);}
+    public List<Course> getCourseByCategory(Category category) throws CategoryException {return courseOperations.getCourseByCategory(category);}
 
     @Override
     public List<Student> getAllStudents() { return studentOperations.getAllStudents(); }
 
     @Override
-    public Student createStudent(Student s) {return studentOperations.createStudent(s);}
+    public Student createStudent(Student s) throws StudentException{return studentOperations.createStudent(s);}
 
     @Override
-    public List<Student> getStudentByGroup(int group) {
+    public List<Student> getStudentByGroup(int group) throws GroupException {
         return studentOperations.getStudentByGroup(group);
     }
 
     @Override
-    public Student getStudentById(int id) {
+    public Student getStudentById(int id) throws StudentException {
         return studentOperations.getStudentById(id);
     }
 
 
     @Override
-    public void updateStudent(Student student) {
+    public void updateStudent(Student student) throws StudentException{
         studentOperations.updateStudent(student);
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
@@ -76,7 +80,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public void deleteStudent(int id) {
+    public void deleteStudent(int id) throws StudentException, CourseException{
         Student student = studentOperations.getStudentById(id);
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
@@ -86,7 +90,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
     }
 
     @Override
-    public boolean addStudentOnCourse(int studentId, int courseId) {
+    public void addStudentOnCourse(int studentId, int courseId) throws StudentException, CourseException{
         Student student = getStudentById(studentId);
         Course course = getCourseById(courseId);
         if (student != null && course != null) {
@@ -95,28 +99,19 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
                 course.getStudents().add(student);
                 studentOperations.updateStudent(student);
                 courseOperations.updateCourse(course);
-                return true;
+                return;
             }
-            return false;
+            //?
         }
-        return false;
-        /*
-        Сделать void
-        try{
-        Student student = getStudentById(studentId);
-        Course course = getCourseById(courseId);
-        isStudentOnCourse(student, course);
-        student.getCourses().add(course);
-        course.getStudents().add(student);
-        studentOperations.updateStudent(student);
-        courseOperations.updateCourse(course);
-         }
-        throw new RuntimeException("Нельзя добавить студента на курс.");
-        */
+        if(student == null){
+            throw new StudentException("Нельзя добавить студента " + student.getFirstname() +" на курс " + course.getName());
+        }
+        throw new CourseException("Нельзя добавить на курс " + course.getName() +" студента " + student.getFirstname());
     }
 
+
     @Override
-    public boolean deleteStudentFromCourse(int studentId, int courseId) {
+    public void deleteStudentFromCourse(int studentId, int courseId) throws CourseException, StudentException{
         Student student = getStudentById(studentId);
         Course course = getCourseById(courseId);
         if (student != null && course != null) {
@@ -125,40 +120,29 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
                 course.getStudents().remove(student);
                 studentOperations.updateStudent(student);
                 courseOperations.updateCourse(course);
-                return true;
+                return;
             }
-            return false;
         }
-        return false;
-
-        /*
-        Сделать void
-        try{
-        Student student = getStudentById(studentId);
-        Course course = getCourseById(courseId);
-        isStudentOnCourse(student, course);
-        student.getCourses().remove(course);
-        course.getStudents().remove(student);
-        studentOperations.updateStudent(student);
-        courseOperations.updateCourse(course);
-         }
-        throw new RuntimeException("Нельзя удалить студента с курса.");
-        */
+        if(student == null){
+            throw new StudentException("Нельзя удалить студента с курса ");
+        }
+        throw new CourseException("Нельзя удалить курс у студента.");
     }
 
+
     @Override
-    public List<Course> getAllCoursesOfStudent(int studentId){
+    public List<Course> getAllCoursesOfStudent(int studentId) throws StudentException{
             return studentOperations.getAllCoursesOfStudent(studentId);
     }
 
     @Override
-    public List<Student> getAllStudentsOnCourse(int courseId){
+    public List<Student> getAllStudentsOnCourse(int courseId) throws CourseException{
         return courseOperations.getAllStudentsOnCourse(courseId);
     }
 
 
 //check
-    private void updateCourseToStudent(Student student, Course course) {
+    private void updateCourseToStudent(Student student, Course course) throws CourseException{
         List<Course> courses = student.getCourses();
         for (Course c : courses) {
             if (c.getId() == course.getId()) {
@@ -167,12 +151,12 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
                 return;
             }
         }
-        throw new RuntimeException("Нельзя обновить курс у студента.");
+        throw new CourseException("Нельзя обновить курс " + course.getName() +" у студента " + student.getFirstname());
     }
 
 
     //check
-    private void updateStudentToCourse(Student student, Course course) {
+    private void updateStudentToCourse(Student student, Course course) throws StudentException{
         List<Student> students = course.getStudents();
         for (Student s : students) {
             if (s.getId() == student.getId()) {
@@ -181,7 +165,7 @@ public class MainService implements MainOperations, StudentOperations, CourseOpe
                 return;
             }
         }
-        throw new RuntimeException("Нельзя обновить студента на курсе.");
+        throw new StudentException("Нельзя обновить студента " + student.getFirstname() +" на курсе " + course.getName());
     }
 
     private boolean isStudentOnCourse(Student student, Course course) {
